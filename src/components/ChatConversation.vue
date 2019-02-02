@@ -1,6 +1,6 @@
 <template>
   <div class="chat-conversation">
-    <p>chat-conversation</p>
+    <p class="chat-conversation__header">conversation</p>
     <chat-message
       v-for="message in messages"
       :message="message"
@@ -29,12 +29,18 @@ export default {
     this.socket.on('message', (data) => {
       this.messages.push(data);
     });
+    this.socket.on('disconnect', () => {
+      this.messages = [];
+    });
   }
 }
 </script>
 
 <style lang="scss">
 .chat-conversation {
-  padding: 0 10px;
+  &__header {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
 }
 </style>

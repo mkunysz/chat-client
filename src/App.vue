@@ -1,16 +1,22 @@
 <template>
   <div class="chat">
-    <div class="chat__conversation">
-      <chat-conversation :socket="socket">
-      </chat-conversation>
-      <div class="chat__controls">
-        <input @keyup="onKeyUp" class="chat__message-input" v-model="message" />
-        <button class="chat__send-button" @click="sendMessage">Send</button>
-      </div>
+    <div class="chat__name-form" v-if="!user.name">
+      <input class="chat__message-input" v-model="preselectedName" />
+      <button class="chat__send-button" @click="saveName">Enter Chat</button>
     </div>
-    <div class="chat__participants">
-      <chat-user-list :socket="socket">
-      </chat-user-list>
+    <div class="chat__wrapper" v-else>
+      <div class="chat__conversation">
+        <chat-conversation :socket="socket">
+        </chat-conversation>
+        <div class="chat__controls">
+          <input @keyup="onKeyUp" class="chat__message-input" v-model="message" />
+          <button class="chat__send-button" @click="sendMessage">Send</button>
+        </div>
+      </div>
+      <div class="chat__participants">
+        <chat-user-list :socket="socket">
+        </chat-user-list>
+      </div>
     </div>
   </div>
 </template>
@@ -29,16 +35,17 @@ export default {
   data() {
     return {
       message: '',
-      socket: io('http://localhost:8081'),
+      socket: null,
       user: {
-        name: 'marcin'
-      }
+        name: ''
+      },
+      preselectedName: ''
     };
   },
   mounted() {
-    this.connect();
+
   },
-  destroyed() {
+  beforeDestroy() {
     this.socket.emit('disconnected', {
       user: this.user
     });
@@ -58,6 +65,14 @@ export default {
       if (event.keyCode === 13) {
         this.sendMessage();
       }
+    },
+    saveName() {
+      this.user.name = this.preselectedName;
+      this.preselectedName = '';
+      this.socket = io('http://localhost:8081');
+      this.socket.on('connect', () => {
+        this.connect();
+      });
     }
   }
 }
@@ -88,9 +103,6 @@ img {
   height: auto;
 }
 .chat {
-  display: flex;
-  flex: 1;
-  flex-direction: row;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -98,6 +110,11 @@ img {
   color: #2c3e50;
   margin: 20px;
   border: 1px solid #ccc;
+  &__wrapper {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+  }
   &__conversation {
     flex: 4;
     display: flex;
@@ -121,6 +138,7 @@ img {
     border: none;
     border-top: 1px solid #ccc;
     border-right: 1px solid #ccc;
+    outline: none;
   }
   &__send-button {
     height: 30px;
@@ -128,6 +146,9 @@ img {
     border: 0;
     background: white;
     border-top: 1px solid #ccc
+  }
+  &__name-form {
+
   }
 }
 </style>

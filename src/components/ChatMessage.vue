@@ -16,6 +16,7 @@ export default {
 
 <style lang="scss">
 .chat-message {
+  padding: 0 10px;
   text-align: left;
 }
 </style>

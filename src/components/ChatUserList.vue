@@ -1,6 +1,6 @@
 <template>
   <div class="chat-user-list">
-    <p>chat-user-list</p>
+    <p class="chat-user-list__header">user list</p>
     <div class="chat-user-list__user" v-for="user in users" v-bind:key="user.name">
       {{ user.name }}
     </div>
@@ -15,20 +15,15 @@ export default {
   },
   data() {
     return {
-      users: []
+      users: {}
     };
   },
   mounted() {
-    this.socket.on('connected', (user) => {
-      this.users.push(user);
+    this.socket.on('users', (users) => {
+      this.users = users;
     });
-    this.socket.on('disconnected', (user) => {
-      for(let i = 0; i < this.users.length; i++) {
-        if (user.name === this.users[i].name){
-          this.users.splice(i, 1);
-          return;
-        }
-      }
+    this.socket.on('disconnect', () => {
+      this.users = {};
     });
   }
 }
@@ -36,8 +31,12 @@ export default {
 
 <style lang="scss">
 .chat-user-list {
-  padding: 0 10px;
+  &__header {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
   &__user {
+    padding: 0 10px;
     text-align: left;
   }
 }
