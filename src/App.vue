@@ -1,8 +1,11 @@
 <template>
   <div class="chat">
-    <div class="chat__name-form" v-if="!user.name">
-      <input class="chat__message-input" v-model="preselectedName" />
-      <button class="chat__send-button" @click="saveName">Enter Chat</button>
+    <div class="chat__form-wrapper" v-if="!user.name">
+      <h1>Welcome to Vuejs Chat</h1>
+      <div class="chat__form">
+        <input class="chat__name-input" v-model="preselectedName" placeholder="Select your name" />
+        <button class="chat__save-button" @click="saveName">Enter Chat</button>
+      </div>
     </div>
     <div class="chat__wrapper" v-else>
       <div class="chat__conversation">
@@ -42,13 +45,12 @@ export default {
       preselectedName: ''
     };
   },
-  mounted() {
-
-  },
   beforeDestroy() {
-    this.socket.emit('disconnected', {
-      user: this.user
-    });
+    if (this.socket) {
+      this.socket.emit('disconnected', {
+        user: this.user
+      });
+    }
   },
   methods: {
     connect() {
@@ -88,6 +90,10 @@ html {
   box-sizing: inherit;
 }
 
+html,body {
+  height: 100%;
+}
+
 body, h1, h2, h3, h4, h5, h6, p, ol, ul {
   margin: 0;
   padding: 0;
@@ -103,17 +109,18 @@ img {
   height: auto;
 }
 .chat {
+  height: 100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin: 20px;
-  border: 1px solid #ccc;
   &__wrapper {
     display: flex;
     flex-direction: row;
     flex: 1;
+    border: 1px solid #ccc;
   }
   &__conversation {
     flex: 4;
@@ -147,8 +154,23 @@ img {
     background: white;
     border-top: 1px solid #ccc
   }
-  &__name-form {
-
+  &__form-wrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  &__form {
+    margin: 10px 0;
+  }
+  &__name-input,
+  &__save-button {
+    height: 30px;
+    border: 1px solid #ccc;
+    margin: 0 5px;
+    padding: 0 15px;
+    outline: none;
   }
 }
 </style>
