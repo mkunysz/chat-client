@@ -1,6 +1,5 @@
 <template>
   <div class="chat-user-list">
-    <p class="chat-user-list__header">user list</p>
     <div class="chat-user-list__user" v-for="user in users" v-bind:key="user.name">
       {{ user.name }}
     </div>
@@ -34,10 +33,7 @@ export default {
 
 <style lang="scss">
 .chat-user-list {
-  &__header {
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px;
-  }
+  padding: 10px 0;
   &__user {
     padding: 0 10px;
     text-align: left;

@@ -1,13 +1,11 @@
 <template>
   <div class="chat-conversation">
-    <p class="chat-conversation__header">conversation</p>
     <div
       class="chat-conversation__message"
       v-for="message in messages"
       :message="message"
       v-bind:key="message.id">
-      <strong class="chat-message__user">{{ message.user.name }}: </strong>
-      <span class="chat-message__content">{{ message.message }}</span>
+      <strong>{{ message.user.name }}: </strong>{{ message.message }}
     </div>
   </div>
 </template>
@@ -39,13 +37,10 @@ export default {
 
 <style lang="scss">
 .chat-conversation {
+  padding: 10px 0;
   &__message {
     padding: 0 10px;
     text-align: left;
-  }
-  &__header {
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px;
   }
 }
 </style>
