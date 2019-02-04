@@ -11,7 +11,10 @@
 export default {
   name: 'chat-user-list',
   props: {
-    socket: Object
+    socket: {
+      type: Object,
+      required: true
+    }
   },
   data() {
     return {

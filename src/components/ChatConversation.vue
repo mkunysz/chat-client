@@ -15,13 +15,16 @@
 <script>
 export default {
   name: 'ChatConversation',
+  props: {
+    socket: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       messages: []
     };
-  },
-  props: {
-    socket: Object
   },
   mounted() {
     this.socket.on('message', (data) => {
