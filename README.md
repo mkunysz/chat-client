@@ -1,5 +1,7 @@
 # chat-client
 
+> Vuejs chat-client application build on top of vue-cli 3
+
 ## Project setup
 ```
 yarn install
@@ -27,3 +29,7 @@ yarn run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## License
+
+[MIT](https://opensource.org/licenses/MIT) © Marcin Kunysz
