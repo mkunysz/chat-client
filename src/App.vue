@@ -1,25 +1,20 @@
 <template>
   <div class="chat">
-    <div class="chat__form-wrapper" v-if="!user.name">
-      <h1>Welcome to Vuejs Chat</h1>
-      <div class="chat__form">
-        <input class="chat__name-input" v-model="preselectedName" placeholder="Select your name" />
-        <button class="chat__save-button" @click="saveName">Enter Chat</button>
-      </div>
-    </div>
-    <div class="chat__wrapper" v-else>
+    <div class="chat__wrapper" v-if="user.name">
       <div class="chat__conversation">
         <chat-conversation :socket="socket">
         </chat-conversation>
         <div class="chat__controls">
-          <input @keyup="onKeyUp" class="chat__message-input" v-model="message" />
-          <button class="chat__send-button" @click="sendMessage">Send</button>
+          <input @keyup="onKeyUp" class="chat__input" v-model="message" />
+          <button class="chat__button" @click="sendMessage">Send</button>
         </div>
       </div>
       <div class="chat__participants">
-        <chat-user-list :socket="socket">
-        </chat-user-list>
+        <chat-user-list :socket="socket"></chat-user-list>
       </div>
+    </div>
+    <div class="chat__error" v-else>
+      Error, reload page and provide valid username!
     </div>
   </div>
 </template>
@@ -40,15 +35,16 @@ export default {
       message: '',
       socket: null,
       user: {
-        name: ''
-      },
-      preselectedName: ''
+        name: null
+      }
     };
   },
-  beforeDestroy() {
-    if (this.socket) {
-      this.socket.emit('disconnected', {
-        user: this.user
+  created() {
+    this.user.name = prompt('Please enter your username:', '');
+    if (this.user.name) {
+      this.socket = io('http://localhost:8081');
+      this.socket.on('connect', () => {
+        this.connect();
       });
     }
   },
@@ -67,16 +63,15 @@ export default {
       if (event.keyCode === 13) {
         this.sendMessage();
       }
-    },
-    saveName() {
-      this.user.name = this.preselectedName;
-      this.preselectedName = '';
-      this.socket = io('http://localhost:8081');
-      this.socket.on('connect', () => {
-        this.connect();
+    }
+  },
+  beforeDestroy() {
+    if (this.socket) {
+      this.socket.emit('disconnected', {
+        user: this.user
       });
     }
-  }
+  },
 }
 </script>
 
@@ -90,7 +85,7 @@ html {
   box-sizing: inherit;
 }
 
-html,body {
+html, body {
   height: 100%;
 }
 
@@ -100,14 +95,6 @@ body, h1, h2, h3, h4, h5, h6, p, ol, ul {
   font-weight: normal;
 }
 
-ol, ul {
-  list-style: none;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
 .chat {
   height: 100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -138,7 +125,7 @@ img {
     display: flex;
     margin-top: auto;
   }
-  &__message-input {
+  &__input {
     height: 30px;
     padding: 0 10px;
     flex: 12;
@@ -147,30 +134,19 @@ img {
     border-right: 1px solid #ccc;
     outline: none;
   }
-  &__send-button {
+  &__button {
     height: 30px;
     flex: 1;
     border: 0;
     background: white;
     border-top: 1px solid #ccc
   }
-  &__form-wrapper {
+  &__error {
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-  }
-  &__form {
-    margin: 10px 0;
-  }
-  &__name-input,
-  &__save-button {
-    height: 30px;
-    border: 1px solid #ccc;
-    margin: 0 5px;
-    padding: 0 15px;
-    outline: none;
   }
 }
 </style>
