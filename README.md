@@ -2,6 +2,10 @@
 
 > Vuejs chat-client application build on top of vue-cli 3
 
+## Screenshot
+
+![chat client application](screenshot.png)
+
 ## Project setup
 ```
 yarn install
